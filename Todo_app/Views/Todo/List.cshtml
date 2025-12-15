@@ -1,0 +1,60 @@
+﻿@using Todo_app.Enums
+@model List<Todo_app.Models.Todo>
+
+
+
+@{
+    ViewData["Title"] = "Mes TODOs";
+    var now = DateTime.Now;
+    
+}
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Libellé</th>
+            <th>Description</th>
+            <th>État</th>
+            <th>Date limite</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var todo in Model)
+        {
+            bool isLate = todo.DateLimite < now && todo.State != TodoState.Done;
+
+            <tr class="@(isLate ? "late" : "")">
+                <td class="@(todo.State == TodoState.Done)">
+                    @todo.Libelle
+                </td>
+
+                <td class="@(todo.State == TodoState.Done )">
+                    @todo.Description
+                </td>
+
+                <td>@todo.State</td>
+
+                <td>@todo.DateLimite.ToShortDateString()</td>
+
+                <td>
+                    <!-- Edit -->
+                    <a asp-action="Edit" asp-route-id="@todo.Id"
+                       class="btn btn-sm btn-primary">
+                        <i class="fa fa-pen"></i>
+                    </a>
+
+                    <!-- Delete -->
+                    <a asp-action="Delete" asp-route-id="@todo.Id"
+                       class="btn btn-sm btn-danger"
+                       onclick="return confirm('Voulez-vous supprimer cette tâche ?');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
